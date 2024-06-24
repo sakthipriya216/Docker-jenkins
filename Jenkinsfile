@@ -4,6 +4,13 @@ pipeline
     
         stages
         {
+            stage('Docker version')
+            {
+                steps
+                {
+                    sh 'docker --version'
+                }
+            }
 
             stage('Docker build..')
             {
@@ -29,7 +36,7 @@ pipeline
             {
                 steps
                 {
-                    sh 'docker run --name alpine_container -d -p 8015:80 --rm sakthisanjay2119/alpine_nginx'
+                    sh 'docker run --name alpine_container -p -d 8015:80 sakthisanjay2119/alpine_nginx'
                 }
             }
 
@@ -39,6 +46,34 @@ pipeline
                 {
                     sh 'echo Completed'
                 }
+            }
+        }
+
+        post
+        {
+            always
+            {
+                sh 'echo "stages ended"'
+            }
+
+            success
+            {
+                sh 'echo "Docker is present and the task is successfully completed."'
+            }
+
+            failure
+            {
+                sh 'echo "Docker is not present"'
+            }
+
+            changed
+            {
+                sh 'echo "Status of build is changed with respect to last build (success to failure / failure to sucess).."'
+            }
+
+            unstable
+            {
+                sh 'echo "Jenkins build is unstable.."'
             }
         }
     
