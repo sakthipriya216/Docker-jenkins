@@ -4,17 +4,6 @@ pipeline
     
         stages
         {
-            stage('Docker login..')
-            {
-                steps
-                {
-                    withDockerRegistry(credentialsId: 'Jenkins-Docker',  url: 'https://index.docker.io/v1/')
-                    {
-                        sh 'echo "Login sucess!!!.."'
-                    }
-                }
-                
-            }
 
             stage('Docker build..')
             {
@@ -28,8 +17,12 @@ pipeline
             {
                 steps
                 {
-                    sh 'docker push sakthisanjay2119/alpine_nginx'
+                    withDockerRegistry(credentialsId: 'Jenkins-Docker',  url: 'https://index.docker.io/v1/')
+                    {
+                        sh 'docker push sakthisanjay2119/alpine_nginx'
+                    }
                 }
+                
             }
 
             stage('Docker container.')
@@ -39,6 +32,7 @@ pipeline
                     sh 'docker run --name alpine_container -p 8015:8080 sakthisanjay2119/alpine_nginx'
                 }
             }
+            
             stage('Finish..')
             {
                 steps
