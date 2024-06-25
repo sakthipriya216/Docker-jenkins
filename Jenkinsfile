@@ -11,12 +11,27 @@ pipeline
                     sh 'docker --version'
                 }
             }
+            
+            stage('user input for build version')
+            {
+                steps
+                {
+                    script
+                    {
+                        version = input(
+                            message: 'Enter the build version.',
+                            ok: 'Submit',
+                            parameters: [string(name: 'NAME')]
+                        )
+                    }
+                }
+            }
 
             stage('Docker build..')
             {
                 steps
                 {
-                    sh 'docker build . -t sakthisanjay2119/alpine_nginx'
+                    sh "docker build . -t sakthisanjay2119/alpine_nginx:$version"
                 }
             }
 
@@ -26,7 +41,7 @@ pipeline
                 {
                     withDockerRegistry(credentialsId: 'Jenkins-Docker',  url: 'https://index.docker.io/v1/')
                     {
-                        sh 'docker push sakthisanjay2119/alpine_nginx'
+                        sh "docker push sakthisanjay2119/alpine_nginx:$version"
                     }
                 }
                 
@@ -36,7 +51,7 @@ pipeline
             {
                 steps
                 {
-                    sh 'docker run --name alpine_container -d -p 8015:80 --rm sakthisanjay2119/alpine_nginx'
+                    sh 'docker run --name alpine_container -d -p 8015:80 --rm sakthisanjay2119/alpine_nginx:$version'
                 }
             }
 
