@@ -51,7 +51,7 @@ pipeline
             {
                 steps
                 {
-                    sh "docker run --name alpine_container -d -p 8015:80 --rm sakthisanjay2119/alpine_nginx:$version"
+                    sh "docker run --name alpine_container_$version -d -p 8015:80 --rm sakthisanjay2119/alpine_nginx:$version"
                 }
             }
 
